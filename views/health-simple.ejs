@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Health - Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .dashboard-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 128, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Epic Sidebar */
+        .epic-sidebar {
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(25px);
+            border-right: 1px solid rgba(0, 212, 255, 0.2);
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .epic-sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg,
+                rgba(0, 212, 255, 0.05) 0%,
+                rgba(255, 0, 128, 0.05) 50%,
+                rgba(0, 212, 255, 0.05) 100%);
+            pointer-events: none;
+        }
+
+        .sidebar-brand {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+            position: relative;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #00d4ff, #ff0080);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .brand-text h4 {
+            margin: 0;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand-text span {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section-title {
+            padding: 0 1.5rem 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+            border-left-color: #00d4ff;
+        }
+
+        .nav-link.active {
+            color: #00d4ff;
+            background: rgba(0, 212, 255, 0.15);
+            border-left-color: #00d4ff;
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .epic-header {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 3rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .header-title h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(135deg, #00d4ff, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-title p {
+            margin: 0.5rem 0 0;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-epic {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-epic:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: #00d4ff;
+            color: #00d4ff;
+            transform: translateY(-2px);
+        }
+
+        /* Health Section */
+        .health-section {
+            padding: 3rem;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .status-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00d4ff, #ff0080);
+        }
+
+        .status-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.1);
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .status-icon.healthy {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+        }
+
+        .status-icon.warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .status-icon.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .status-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .status-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .status-value.healthy { color: #22c55e; }
+        .status-value.warning { color: #f59e0b; }
+        .status-value.error { color: #ef4444; }
+
+        .status-description {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .details-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .details-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .detail-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .auto-refresh {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            color: #00d4ff;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-content {
+                margin-left: 0;
+            }
+            .epic-sidebar {
+                transform: translateX(-100%);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .epic-header {
+                padding: 1.5rem;
+            }
+            .health-section {
+                padding: 1.5rem;
+            }
+            .status-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-bg"></div>
+
+    <!-- Epic Sidebar -->
+    <div class="epic-sidebar">
+        <div class="sidebar-brand">
+            <a href="/" class="brand-logo">
+                <div class="brand-icon">
+                    <i class="bi bi-controller"></i>
+                </div>
+                <div class="brand-text">
+                    <h4>Gaming Store</h4>
+                    <span>Admin Panel</span>
+                </div>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Main</div>
+                <div class="nav-item">
+                    <a href="/admin/dashboard" class="nav-link">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Management</div>
+                <div class="nav-item">
+                    <a href="/admin/users" class="nav-link">
+                        <i class="bi bi-people"></i>
+                        <span>Users</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/accounts" class="nav-link">
+                        <i class="bi bi-controller"></i>
+                        <span>Gaming Accounts</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/transactions" class="nav-link">
+                        <i class="bi bi-credit-card"></i>
+                        <span>Transactions</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/purchases" class="nav-link">
+                        <i class="bi bi-bag-check"></i>
+                        <span>Purchases</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">System</div>
+                <div class="nav-item">
+                    <a href="/admin/broadcast" class="nav-link">
+                        <i class="bi bi-megaphone"></i>
+                        <span>Broadcast</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/health" class="nav-link active">
+                        <i class="bi bi-heart-pulse"></i>
+                        <span>System Health</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/settings" class="nav-link">
+                        <i class="bi bi-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <form action="/admin/logout" method="POST" style="margin: 0;">
+                        <button type="submit" class="nav-link" style="background: none; border: none; width: 100%; text-align: left;">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>Logout</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Epic Header -->
+        <div class="epic-header">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1><i class="bi bi-heart-pulse me-3"></i>System Health</h1>
+                    <p>Real-time monitoring of system components and performance</p>
+                </div>
+                <div class="header-actions">
+                    <a href="/admin/dashboard" class="btn-epic">
+                        <i class="bi bi-speedometer2"></i>
+                        Dashboard
+                    </a>
+                    <button onclick="window.location.reload()" class="btn-epic">
+                        <i class="bi bi-arrow-clockwise"></i>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Section -->
+        <div class="health-section">
+            <!-- Status Cards -->
+            <div class="status-grid">
+                <!-- Overall Status -->
+                <div class="status-card">
+                    <div class="status-header">
+                        <div class="status-icon healthy">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <div>
+                            <h3 class="status-title">Overall Status</h3>
+                        </div>
+                    </div>
+                    <div class="status-value healthy">
+                        <% if ((status || 'healthy') === 'healthy') { %>
+                            ✅ HEALTHY
+                        <% } else { %>
+                            ❌ ERROR
+                        <% } %>
+                    </div>
+                    <div class="status-description">
+                        All system components are operating normally. No issues detected.
+                    </div>
+                </div>
+
+                <!-- System Uptime -->
+                <div class="status-card">
+                    <div class="status-header">
+                        <div class="status-icon healthy">
+                            <i class="bi bi-clock"></i>
+                        </div>
+                        <div>
+                            <h3 class="status-title">System Uptime</h3>
+                        </div>
+                    </div>
+                    <div class="status-value healthy">
+                        <%= uptimeFormatted || '0m' %>
+                    </div>
+                    <div class="status-description">
+                        Time since the last system restart. Longer uptime indicates system stability.
+                    </div>
+                </div>
+
+                <!-- Environment -->
+                <div class="status-card">
+                    <div class="status-header">
+                        <div class="status-icon warning">
+                            <i class="bi bi-gear"></i>
+                        </div>
+                        <div>
+                            <h3 class="status-title">Environment</h3>
+                        </div>
+                    </div>
+                    <div class="status-value warning">
+                        <%= (environment || 'development').toUpperCase() %>
+                    </div>
+                    <div class="status-description">
+                        Current deployment environment. Production environments have enhanced security.
+                    </div>
+                </div>
+
+                <!-- Version -->
+                <div class="status-card">
+                    <div class="status-header">
+                        <div class="status-icon healthy">
+                            <i class="bi bi-tag"></i>
+                        </div>
+                        <div>
+                            <h3 class="status-title">Application Version</h3>
+                        </div>
+                    </div>
+                    <div class="status-value healthy">
+                        v<%= version || '1.0.0' %>
+                    </div>
+                    <div class="status-description">
+                        Current version of the gaming accounts bot system.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Information -->
+            <div class="details-card">
+                <h2 class="details-title">
+                    <i class="bi bi-info-circle"></i>
+                    System Information
+                </h2>
+
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">System Uptime</div>
+                        <div class="detail-value"><%= uptimeFormatted || 'N/A' %></div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">Environment</div>
+                        <div class="detail-value"><%= (environment || 'development').toUpperCase() %></div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">Application Version</div>
+                        <div class="detail-value">v<%= version || '1.0.0' %></div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">Last Updated</div>
+                        <div class="detail-value"><%= new Date(timestamp || new Date()).toLocaleString() %></div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">Server Status</div>
+                        <div class="detail-value">
+                            <% if ((status || 'healthy') === 'healthy') { %>
+                                🟢 Online
+                            <% } else { %>
+                                🔴 Issues Detected
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">Platform</div>
+                        <div class="detail-value">Gaming Accounts Bot</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auto-refresh indicator -->
+        <div class="auto-refresh">
+            <i class="bi bi-arrow-clockwise pulse me-2"></i>
+            Auto-refresh in <span id="countdown">30</span>s
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-refresh every 30 seconds
+        let refreshInterval;
+        let countdown = 30;
+
+        function startAutoRefresh() {
+            refreshInterval = setInterval(() => {
+                countdown--;
+                const countdownElement = document.getElementById('countdown');
+                if (countdownElement) {
+                    countdownElement.textContent = countdown;
+                }
+
+                if (countdown <= 0) {
+                    window.location.reload();
+                }
+            }, 1000);
+        }
+
+        // Start auto-refresh on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            startAutoRefresh();
+        });
+
+        // Stop auto-refresh when user interacts with the page
+        document.addEventListener('click', function() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+                const countdownElement = document.getElementById('countdown');
+                if (countdownElement) {
+                    countdownElement.textContent = 'paused';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

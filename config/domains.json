@@ -1,0 +1,19 @@
+{
+  "customDomains": {
+    "primary": "accountbot.local",
+    "admin": "admin.accountbot.local",
+    "api": "api.accountbot.local",
+    "bot": "bot.accountbot.local"
+  },
+  "defaultPort": 3000,
+  "urls": {
+    "admin": "http://accountbot.local:3000/admin",
+    "dashboard": "http://accountbot.local:3000/admin/dashboard",
+    "settings": "http://accountbot.local:3000/admin/settings"
+  },
+  "shortcuts": {
+    "enabled": true,
+    "desktop": true,
+    "startMenu": false
+  }
+}

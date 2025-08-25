@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= account.title %> - Account Showcase</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Epic Background Effects */
+        .showcase-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 128, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 255, 128, 0.08) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(1deg); }
+            66% { transform: translateY(10px) rotate(-1deg); }
+        }
+
+        /* Header */
+        .showcase-header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
+            color: white;
+        }
+
+        /* Main Showcase Container */
+        .showcase-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Account Header Section */
+        .account-header-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .account-header-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0, 212, 255, 0.1), rgba(255, 0, 128, 0.1));
+            opacity: 0.5;
+            z-index: -1;
+        }
+
+        .account-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .account-game-type {
+            display: inline-block;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Images Showcase Section */
+        .images-showcase {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .showcase-image {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .showcase-image:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 212, 255, 0.3);
+        }
+
+        .showcase-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Account Information Section */
+        .account-info-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .info-card h3 {
+            color: #00d4ff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .price-value {
+            background: linear-gradient(135deg, #00d4ff, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        /* Account Code Section */
+        .account-code-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .account-code {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #00d4ff;
+            margin-bottom: 1rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .purchase-btn {
+            background: linear-gradient(135deg, #00d4ff, #ff0080);
+            border: none;
+            color: white;
+            padding: 1rem 3rem;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .purchase-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 212, 255, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .account-info-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .images-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+            
+            .account-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="showcase-bg"></div>
+    
+    <!-- Header -->
+    <div class="showcase-header">
+        <div class="header-content">
+            <a href="/admin/accounts" class="back-btn">
+                <i class="bi bi-arrow-left"></i>
+                Back to Accounts
+            </a>
+            <h1>Account Showcase</h1>
+        </div>
+    </div>
+
+    <!-- Main Showcase -->
+    <div class="showcase-container">
+        <!-- Account Header -->
+        <div class="account-header-section">
+            <div class="account-game-type">
+                <i class="bi bi-controller"></i>
+                <%= account.game_type || 'Gaming Account' %>
+            </div>
+            <h1 class="account-title"><%= account.title %></h1>
+            <% if (account.description) { %>
+            <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; line-height: 1.6;">
+                <%= account.description %>
+            </p>
+            <% } %>
+        </div>
+
+        <!-- Images Showcase -->
+        <% if (account.images && account.images.length > 0) { %>
+        <div class="images-showcase">
+            <h2 style="color: #00d4ff; margin-bottom: 1.5rem;">
+                <i class="bi bi-images"></i>
+                Account Screenshots
+            </h2>
+            <div class="images-grid">
+                <% account.images.forEach(image => { %>
+                <div class="showcase-image" onclick="openImageModal('<%= image %>')">
+                    <img src="<%= image %>" alt="Account Screenshot" loading="lazy">
+                </div>
+                <% }); %>
+            </div>
+        </div>
+        <% } %>
+
+        <!-- Account Information -->
+        <div class="account-info-section">
+            <!-- Account Details -->
+            <div class="info-card">
+                <h3>
+                    <i class="bi bi-info-circle"></i>
+                    Account Information
+                </h3>
+                
+                <div class="info-item">
+                    <span class="info-label">🎮 Account Status</span>
+                    <span class="info-value">[ Good ]</span>
+                </div>
+                
+                <% if (account.level) { %>
+                <div class="info-item">
+                    <span class="info-label">📊 Level</span>
+                    <span class="info-value"><%= account.level %></span>
+                </div>
+                <% } %>
+                
+                <% if (account.rank) { %>
+                <div class="info-item">
+                    <span class="info-label">🏆 Rank</span>
+                    <span class="info-value"><%= account.rank %></span>
+                </div>
+                <% } %>
+                
+                <% if (account.region) { %>
+                <div class="info-item">
+                    <span class="info-label">🌍 Region</span>
+                    <span class="info-value"><%= account.region %></span>
+                </div>
+                <% } %>
+                
+                <div class="info-item">
+                    <span class="info-label">✅ Verify Code</span>
+                    <span class="info-value">[ Bug Code ]</span>
+                </div>
+                
+                <div class="info-item">
+                    <span class="info-label">⏰ Inactive</span>
+                    <span class="info-value">[ 4Days+ ]</span>
+                </div>
+                
+                <div class="info-item">
+                    <span class="info-label">🎯 Collector</span>
+                    <span class="info-value">[ Exalted ]</span>
+                </div>
+                
+                <div class="info-item">
+                    <span class="info-label">📱 Device</span>
+                    <span class="info-value">[ IDK ]</span>
+                </div>
+            </div>
+
+            <!-- Purchase Information -->
+            <div class="info-card">
+                <h3>
+                    <i class="bi bi-credit-card"></i>
+                    Purchase Details
+                </h3>
+                
+                <div class="info-item">
+                    <span class="info-label">💰 Price</span>
+                    <span class="info-value price-value">$<%= account.price %></span>
+                </div>
+                
+                <div class="info-item">
+                    <span class="info-label">📅 Listed</span>
+                    <span class="info-value"><%= new Date(account.created_date).toLocaleDateString() %></span>
+                </div>
+                
+                <div class="info-item">
+                    <span class="info-label">🔒 Status</span>
+                    <span class="info-value">
+                        <%= account.is_available ? 'Available' : 'Sold' %>
+                    </span>
+                </div>
+                
+                <% if (account.username) { %>
+                <div class="info-item">
+                    <span class="info-label">👤 Username</span>
+                    <span class="info-value"><%= account.username %></span>
+                </div>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Account Code & Purchase -->
+        <div class="account-code-section">
+            <div style="margin-bottom: 1rem;">
+                <i class="bi bi-bag" style="font-size: 2rem; color: #00d4ff;"></i>
+            </div>
+            <div class="account-code">Account Code: <%= account.id.toString().padStart(6, '0') %></div>
+            <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 2rem;">
+                Click button below to buy account!
+            </p>
+            <button class="purchase-btn" onclick="purchaseAccount(<%= account.id %>)">
+                <i class="bi bi-cart-plus"></i>
+                Buy This Account
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function openImageModal(imageSrc) {
+            // Create modal for full-size image viewing
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                cursor: pointer;
+            `;
+            
+            const img = document.createElement('img');
+            img.src = imageSrc;
+            img.style.cssText = `
+                max-width: 90%;
+                max-height: 90%;
+                border-radius: 15px;
+                box-shadow: 0 20px 50px rgba(0, 212, 255, 0.3);
+            `;
+            
+            modal.appendChild(img);
+            document.body.appendChild(modal);
+            
+            modal.onclick = () => document.body.removeChild(modal);
+        }
+
+        function purchaseAccount(accountId) {
+            // Redirect to purchase flow or show purchase modal
+            alert(`Initiating purchase for Account #${accountId.toString().padStart(6, '0')}`);
+            // You can implement actual purchase logic here
+        }
+    </script>
+</body>
+</html>

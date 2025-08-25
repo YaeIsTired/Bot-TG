@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Users Management - Gaming Accounts Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-right: 1px solid #2a2a3e;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid #2a2a3e;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-section {
+            padding: 1rem 0;
+        }
+
+        .nav-section-title {
+            padding: 0 1.5rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #8892b0;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            margin: 0.25rem 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: #ccd6f6;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            transform: translateX(4px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-link i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            color: #8892b0;
+            font-size: 1rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%);
+            border: 1px solid #3a3a4e;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #8892b0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            color: #8892b0;
+        }
+
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            color: #ffffff;
+        }
+
+        /* Admin Users Grid */
+        .admin-users-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .admin-user-card {
+            background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%);
+            border: 1px solid #3a3a4e;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .admin-user-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .admin-user-card.super-admin {
+            border: 1px solid #ffd700;
+            background: linear-gradient(135deg, #2a2a1e 0%, #3e3a2a 100%);
+        }
+
+        .admin-user-card.banned {
+            border: 1px solid #ff6b6b;
+            background: linear-gradient(135deg, #2a1e1e 0%, #3e2a2a 100%);
+        }
+
+        .admin-user-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .admin-user-info h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+        }
+
+        .admin-user-role {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .role-super-admin {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #1a1a1a;
+        }
+
+        .role-admin {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+        }
+
+        .admin-user-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #8892b0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-value {
+            font-size: 0.875rem;
+            color: #ccd6f6;
+        }
+
+        .admin-user-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn-primary {
+            background: #667eea;
+            color: #ffffff;
+        }
+
+        .action-btn-warning {
+            background: #f39c12;
+            color: #ffffff;
+        }
+
+        .action-btn-danger {
+            background: #e74c3c;
+            color: #ffffff;
+        }
+
+        .action-btn-success {
+            background: #27ae60;
+            color: #ffffff;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background: rgba(39, 174, 96, 0.2);
+            color: #27ae60;
+            border: 1px solid #27ae60;
+        }
+
+        .status-inactive {
+            background: rgba(149, 165, 166, 0.2);
+            color: #95a5a6;
+            border: 1px solid #95a5a6;
+        }
+
+        .status-banned {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">Gaming Store Admin</div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <div class="nav-item">
+                    <a href="/admin/dashboard" class="nav-link">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Management</div>
+                <div class="nav-item">
+                    <a href="/admin/users" class="nav-link">
+                        <i class="bi bi-people"></i>
+                        <span>Users</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/accounts" class="nav-link">
+                        <i class="bi bi-controller"></i>
+                        <span>Gaming Accounts</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/transactions" class="nav-link">
+                        <i class="bi bi-credit-card"></i>
+                        <span>Transactions</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/purchases" class="nav-link">
+                        <i class="bi bi-bag-check"></i>
+                        <span>Purchases</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">System</div>
+                <div class="nav-item">
+                    <a href="/admin/admin-users" class="nav-link active">
+                        <i class="bi bi-shield-lock"></i>
+                        <span>Admin Users</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/settings" class="nav-link">
+                        <i class="bi bi-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/broadcast" class="nav-link">
+                        <i class="bi bi-megaphone"></i>
+                        <span>Broadcast</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Admin Users Management</h1>
+                <p class="page-subtitle">Manage administrator accounts and permissions</p>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Total Admins</div>
+                        <div class="stat-icon" style="background: rgba(102, 126, 234, 0.2); color: #667eea;">
+                            <i class="bi bi-people"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value"><%= adminStats.total %></div>
+                    <div class="stat-change">All administrator accounts</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Active Admins</div>
+                        <div class="stat-icon" style="background: rgba(39, 174, 96, 0.2); color: #27ae60;">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value"><%= adminStats.active %></div>
+                    <div class="stat-change">Currently active accounts</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Super Admins</div>
+                        <div class="stat-icon" style="background: rgba(255, 215, 0, 0.2); color: #ffd700;">
+                            <i class="bi bi-crown"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value"><%= adminStats.super_admins %></div>
+                    <div class="stat-change">Full access accounts</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Banned Admins</div>
+                        <div class="stat-icon" style="background: rgba(231, 76, 60, 0.2); color: #e74c3c;">
+                            <i class="bi bi-ban"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value"><%= adminStats.banned %></div>
+                    <div class="stat-change">Restricted accounts</div>
+                </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="action-bar">
+                <button class="btn btn-primary" onclick="showAddAdminModal()">
+                    <i class="bi bi-plus-circle"></i>
+                    Add New Admin
+                </button>
+            </div>
+
+            <!-- Admin Users Grid -->
+            <div class="admin-users-grid" id="adminUsersGrid">
+                <% if (adminUsers && adminUsers.length > 0) { %>
+                    <% adminUsers.forEach(admin => { %>
+                    <div class="admin-user-card <%= admin.role === 'super_admin' ? 'super-admin' : '' %> <%= admin.is_banned ? 'banned' : '' %>">
+                        <div class="admin-user-header">
+                            <div class="admin-user-info">
+                                <h4><%= admin.username %></h4>
+                                <span class="admin-user-role <%= admin.role === 'super_admin' ? 'role-super-admin' : 'role-admin' %>">
+                                    <%= admin.role === 'super_admin' ? 'Super Admin' : 'Admin' %>
+                                </span>
+                            </div>
+                            <div class="status-badge <%= admin.is_banned ? 'status-banned' : (admin.is_active ? 'status-active' : 'status-inactive') %>">
+                                <%= admin.is_banned ? 'Banned' : (admin.is_active ? 'Active' : 'Inactive') %>
+                            </div>
+                        </div>
+
+                        <div class="admin-user-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Email</div>
+                                <div class="detail-value"><%= admin.email || 'Not provided' %></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Created</div>
+                                <div class="detail-value"><%= formatDate(admin.created_date) %></div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Last Login</div>
+                                <div class="detail-value"><%= admin.last_login ? formatDate(admin.last_login) : 'Never' %></div>
+                            </div>
+                            <% if (admin.is_banned && admin.ban_reason) { %>
+                            <div class="detail-item">
+                                <div class="detail-label">Ban Reason</div>
+                                <div class="detail-value"><%= admin.ban_reason %></div>
+                            </div>
+                            <% } %>
+                        </div>
+
+                        <div class="admin-user-actions">
+                            <% if (admin.id !== currentUser.id) { %>
+                                <button class="action-btn action-btn-primary" onclick="editAdmin(<%= admin.id %>)">
+                                    <i class="bi bi-pencil"></i>
+                                    Edit
+                                </button>
+                                <% if (admin.is_banned) { %>
+                                    <button class="action-btn action-btn-success" onclick="unbanAdmin(<%= admin.id %>)">
+                                        <i class="bi bi-check-circle"></i>
+                                        Unban
+                                    </button>
+                                <% } else { %>
+                                    <button class="action-btn action-btn-warning" onclick="banAdmin(<%= admin.id %>)">
+                                        <i class="bi bi-ban"></i>
+                                        Ban
+                                    </button>
+                                <% } %>
+                                <button class="action-btn action-btn-danger" onclick="deleteAdmin(<%= admin.id %>)">
+                                    <i class="bi bi-trash"></i>
+                                    Delete
+                                </button>
+                            <% } else { %>
+                                <span class="detail-value" style="font-style: italic; color: #8892b0;">
+                                    <i class="bi bi-person-check"></i>
+                                    This is your account
+                                </span>
+                            <% } %>
+                        </div>
+                    </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="admin-user-card">
+                        <div style="text-align: center; padding: 2rem;">
+                            <i class="bi bi-people" style="font-size: 3rem; color: #8892b0; margin-bottom: 1rem;"></i>
+                            <h4 style="color: #8892b0; margin-bottom: 0.5rem;">No Admin Users Found</h4>
+                            <p style="color: #8892b0;">Add your first admin user to get started.</p>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Admin Modal -->
+    <div class="modal fade" id="addAdminModal" tabindex="-1" aria-labelledby="addAdminModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #1e2139; border: 1px solid #2a2d47;">
+                <div class="modal-header" style="border-bottom: 1px solid #2a2d47;">
+                    <h5 class="modal-title" id="addAdminModalLabel" style="color: #64ffda;">Add New Admin</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addAdminForm">
+                        <div class="mb-3">
+                            <label for="adminUsername" class="form-label" style="color: #ccd6f6;">Username</label>
+                            <input type="text" class="form-control" id="adminUsername" name="username" required
+                                   style="background-color: #0a0e27; border: 1px solid #2a2d47; color: #ccd6f6;">
+                        </div>
+                        <div class="mb-3">
+                            <label for="adminPassword" class="form-label" style="color: #ccd6f6;">Password</label>
+                            <input type="password" class="form-control" id="adminPassword" name="password" required
+                                   style="background-color: #0a0e27; border: 1px solid #2a2d47; color: #ccd6f6;">
+                        </div>
+                        <div class="mb-3">
+                            <label for="adminEmail" class="form-label" style="color: #ccd6f6;">Email (Optional)</label>
+                            <input type="email" class="form-control" id="adminEmail" name="email"
+                                   style="background-color: #0a0e27; border: 1px solid #2a2d47; color: #ccd6f6;">
+                        </div>
+                        <div class="mb-3">
+                            <label for="adminRole" class="form-label" style="color: #ccd6f6;">Role</label>
+                            <select class="form-select" id="adminRole" name="role" required
+                                    style="background-color: #0a0e27; border: 1px solid #2a2d47; color: #ccd6f6;">
+                                <option value="admin">Admin</option>
+                                <option value="super_admin">Super Admin</option>
+                            </select>
+                        </div>
+                    </form>
+                    <div id="addAdminError" class="alert alert-danger" style="display: none; background-color: #2d1b1b; border-color: #5a2d2d; color: #ff6b6b;"></div>
+                    <div id="addAdminSuccess" class="alert alert-success" style="display: none; background-color: #1b2d1b; border-color: #2d5a2d; color: #64ffda;"></div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid #2a2d47;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            style="background-color: #2a2d47; border-color: #2a2d47; color: #ccd6f6;">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="createAdmin()"
+                            style="background-color: #64ffda; border-color: #64ffda; color: #0a0e27;">Create Admin</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Show Add Admin Modal
+        function showAddAdminModal() {
+            // Clear form
+            document.getElementById('addAdminForm').reset();
+            document.getElementById('addAdminError').style.display = 'none';
+            document.getElementById('addAdminSuccess').style.display = 'none';
+
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('addAdminModal'));
+            modal.show();
+        }
+
+        // Create new admin
+        async function createAdmin() {
+            const form = document.getElementById('addAdminForm');
+            const formData = new FormData(form);
+
+            const adminData = {
+                username: formData.get('username'),
+                password: formData.get('password'),
+                email: formData.get('email'),
+                role: formData.get('role')
+            };
+
+            // Validate required fields
+            if (!adminData.username || !adminData.password) {
+                showError('Username and password are required');
+                return;
+            }
+
+            try {
+                const response = await fetch('/admin/api/admin-users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(adminData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showSuccess('Admin user created successfully!');
+                    setTimeout(() => {
+                        location.reload(); // Reload page to show new admin
+                    }, 1500);
+                } else {
+                    showError(result.error || 'Failed to create admin user');
+                }
+            } catch (error) {
+                console.error('Error creating admin:', error);
+                showError('Network error. Please try again.');
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('addAdminError');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('addAdminSuccess').style.display = 'none';
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const successDiv = document.getElementById('addAdminSuccess');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            document.getElementById('addAdminError').style.display = 'none';
+        }
+
+        function editAdmin(id) {
+            alert('Edit Admin - To be implemented for ID: ' + id);
+        }
+
+        function banAdmin(id) {
+            alert('Ban Admin - To be implemented for ID: ' + id);
+        }
+
+        function unbanAdmin(id) {
+            alert('Unban Admin - To be implemented for ID: ' + id);
+        }
+
+        function deleteAdmin(id) {
+            alert('Delete Admin - To be implemented for ID: ' + id);
+        }
+    </script>
+</body>
+</html>

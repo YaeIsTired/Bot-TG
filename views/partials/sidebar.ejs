@@ -1,0 +1,54 @@
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
+    <div class="position-sticky pt-3">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link <%= (typeof currentPage !== 'undefined' && currentPage === 'dashboard') ? 'active' : '' %>" href="/admin/dashboard">
+                    <i class="bi bi-speedometer2"></i>
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <%= (typeof currentPage !== 'undefined' && currentPage === 'users') ? 'active' : '' %>" href="/admin/users">
+                    <i class="bi bi-people"></i>
+                    Users
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <%= (typeof currentPage !== 'undefined' && currentPage === 'accounts') ? 'active' : '' %>" href="/admin/accounts">
+                    <i class="bi bi-controller"></i>
+                    Gaming Accounts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <%= (typeof currentPage !== 'undefined' && currentPage === 'transactions') ? 'active' : '' %>" href="/admin/transactions">
+                    <i class="bi bi-credit-card"></i>
+                    Transactions
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <%= (typeof currentPage !== 'undefined' && currentPage === 'purchases') ? 'active' : '' %>" href="/admin/purchases">
+                    <i class="bi bi-bag-check"></i>
+                    Purchases
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <%= (typeof currentPage !== 'undefined' && currentPage === 'broadcast') ? 'active' : '' %>" href="/admin/broadcast">
+                    <i class="bi bi-megaphone"></i>
+                    Broadcast
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <%= (typeof currentPage !== 'undefined' && currentPage === 'health') ? 'active' : '' %>" href="/admin/health">
+                    <i class="bi bi-heart-pulse"></i>
+                    System Health
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <%= (typeof currentPage !== 'undefined' && currentPage === 'settings') ? 'active' : '' %>" href="/admin/settings">
+                    <i class="bi bi-gear"></i>
+                    Settings
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>

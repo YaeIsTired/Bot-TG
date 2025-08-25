@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broadcast Message - Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .dashboard-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 128, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Epic Sidebar */
+        .epic-sidebar {
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(25px);
+            border-right: 1px solid rgba(0, 212, 255, 0.2);
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .epic-sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg,
+                rgba(0, 212, 255, 0.05) 0%,
+                rgba(255, 0, 128, 0.05) 50%,
+                rgba(0, 212, 255, 0.05) 100%);
+            pointer-events: none;
+        }
+
+        .sidebar-brand {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+            position: relative;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #00d4ff, #ff0080);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .brand-text h4 {
+            margin: 0;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand-text span {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section-title {
+            padding: 0 1.5rem 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+            border-left-color: #00d4ff;
+        }
+
+        .nav-link.active {
+            color: #00d4ff;
+            background: rgba(0, 212, 255, 0.15);
+            border-left-color: #00d4ff;
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .epic-header {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 3rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .header-title h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(135deg, #00d4ff, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-title p {
+            margin: 0.5rem 0 0;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .stat-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 0.75rem 1.25rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00d4ff;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.25rem;
+        }
+
+        /* Broadcast Section */
+        .broadcast-section {
+            padding: 3rem;
+        }
+
+        .broadcast-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 3rem;
+            backdrop-filter: blur(20px);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        .form-control, .form-select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 212, 255, 0.25);
+            color: #ffffff;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .form-select option {
+            background: #1a1a2e;
+            color: #ffffff;
+        }
+
+        .char-count {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 0.5rem;
+        }
+
+        .preview-card {
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .preview-content {
+            color: rgba(255, 255, 255, 0.8);
+            font-style: italic;
+        }
+
+        /* Image Upload Styling */
+        .image-upload-container {
+            margin-top: 0.5rem;
+        }
+
+        .image-upload-area {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-upload-area:hover {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .image-upload-area.dragover {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-placeholder {
+            text-align: center;
+        }
+
+        .image-preview {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #ef4444;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .remove-image:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+        .btn-broadcast {
+            background: linear-gradient(135deg, #00d4ff, #ff0080);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-broadcast:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-broadcast:disabled {
+            opacity: 0.6;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results-card {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-stat {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .result-number {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .result-number.success { color: #22c55e; }
+        .result-number.error { color: #ef4444; }
+        .result-number.rate { color: #3b82f6; }
+
+        .result-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.5rem;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-content {
+                margin-left: 0;
+            }
+            .epic-sidebar {
+                transform: translateX(-100%);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .epic-header {
+                padding: 1.5rem;
+            }
+            .broadcast-section {
+                padding: 1.5rem;
+            }
+            .broadcast-card {
+                padding: 2rem 1.5rem;
+            }
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .header-stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        /* Professional User Selection Styles */
+        .user-selection-container {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 24px;
+            backdrop-filter: blur(20px);
+            box-shadow:
+                0 4px 24px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            padding: 14px 16px 14px 48px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 400;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+        }
+
+        .search-box input:focus {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            outline: none;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 400;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 16px;
+            transition: color 0.2s ease;
+        }
+
+        .search-box input:focus + i {
+            color: rgba(59, 130, 246, 0.8);
+        }
+
+        .user-list {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .user-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .user-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .user-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .user-item {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .user-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .user-item.bg-light {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 3px solid rgba(59, 130, 246, 0.6);
+        }
+
+        .user-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-avatar {
+            position: relative;
+            margin-right: 12px;
+        }
+
+        .user-avatar img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.15s ease;
+        }
+
+        .user-item:hover .user-avatar img {
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        .user-avatar i {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 40px;
+        }
+
+        .selected-count {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .selected-count .badge {
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 16px;
+            background: rgba(59, 130, 246, 0.1);
+            color: rgba(59, 130, 246, 0.9);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-check-input {
+            width: 18px;
+            height: 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin-right: 12px;
+            transition: all 0.15s ease;
+        }
+
+        .form-check-input:checked {
+            background: rgba(59, 130, 246, 0.9);
+            border-color: rgba(59, 130, 246, 0.9);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .form-check-input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .user-info .fw-bold {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .user-info .text-muted {
+            color: rgba(255, 255, 255, 0.5) !important;
+            font-size: 13px;
+            font-weight: 400;
+        }
+
+        .user-status .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .user-status .bg-success {
+            background: rgba(34, 197, 94, 0.9) !important;
+            color: #ffffff;
+        }
+
+        .user-status .bg-secondary {
+            background: rgba(107, 114, 128, 0.9) !important;
+            color: #ffffff;
+        }
+
+        /* Empty state styling */
+        .user-list .text-muted {
+            color: rgba(255, 255, 255, 0.4) !important;
+            text-align: center;
+            padding: 48px 24px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 6px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .user-list .text-muted i {
+            font-size: 32px;
+            color: rgba(255, 255, 255, 0.3);
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .user-list .text-muted div {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .user-list .text-muted small {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Professional Form Styling */
+        .form-select, .form-control, textarea.form-control {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 400;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-select:focus, .form-control:focus, textarea.form-control:focus {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            color: #ffffff;
+            outline: none;
+        }
+
+        .form-select option {
+            background: #1a1a2e;
+            color: #ffffff;
+            padding: 8px 12px;
+        }
+
+        .form-text {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .form-label {
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        /* Professional Button Styling */
+        .btn-primary {
+            background: rgba(59, 130, 246, 0.9);
+            border: 1px solid rgba(59, 130, 246, 0.9);
+            color: #ffffff;
+            font-weight: 500;
+            padding: 12px 24px;
+            border-radius: 8px;
+            transition: all 0.15s ease;
+        }
+
+        .btn-primary:hover {
+            background: rgba(59, 130, 246, 1);
+            border-color: rgba(59, 130, 246, 1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: rgba(107, 114, 128, 0.5);
+            border-color: rgba(107, 114, 128, 0.5);
+            transform: none;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-bg"></div>
+
+    <!-- Epic Sidebar -->
+    <div class="epic-sidebar">
+        <div class="sidebar-brand">
+            <a href="/" class="brand-logo">
+                <div class="brand-icon">
+                    <i class="bi bi-controller"></i>
+                </div>
+                <div class="brand-text">
+                    <h4>Gaming Store</h4>
+                    <span>Admin Panel</span>
+                </div>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Main</div>
+                <div class="nav-item">
+                    <a href="/admin/dashboard" class="nav-link">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Management</div>
+                <div class="nav-item">
+                    <a href="/admin/users" class="nav-link">
+                        <i class="bi bi-people"></i>
+                        <span>Users</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/accounts" class="nav-link">
+                        <i class="bi bi-controller"></i>
+                        <span>Gaming Accounts</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/transactions" class="nav-link">
+                        <i class="bi bi-credit-card"></i>
+                        <span>Transactions</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/purchases" class="nav-link">
+                        <i class="bi bi-bag-check"></i>
+                        <span>Purchases</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">System</div>
+                <div class="nav-item">
+                    <a href="/admin/admin-users" class="nav-link">
+                        <i class="bi bi-shield-lock"></i>
+                        <span>Admin Users</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/broadcast" class="nav-link active">
+                        <i class="bi bi-megaphone"></i>
+                        <span>Broadcast</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/health" class="nav-link">
+                        <i class="bi bi-heart-pulse"></i>
+                        <span>System Health</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/settings" class="nav-link">
+                        <i class="bi bi-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <form action="/admin/logout" method="POST" style="margin: 0;">
+                        <button type="submit" class="nav-link" style="background: none; border: none; width: 100%; text-align: left;">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>Logout</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Epic Header -->
+        <div class="epic-header">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1><i class="bi bi-megaphone me-3"></i>Broadcast Message</h1>
+                    <p>Send messages to all active users through the Telegram bot</p>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-badge">
+                        <span class="stat-number"><%= userStats.total %></span>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-badge">
+                        <span class="stat-number"><%= userStats.active %></span>
+                        <div class="stat-label">Active Users</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Broadcast Section -->
+        <div class="broadcast-section">
+            <div class="broadcast-card">
+                <form id="broadcastForm" enctype="multipart/form-data" novalidate>
+                    <!-- Recipient Type -->
+                    <div class="form-group mb-4">
+                        <label for="recipientType" class="form-label">
+                            <i class="bi bi-people me-2"></i>Recipients
+                        </label>
+                        <select id="recipientType" name="recipientType" class="form-select">
+                            <option value="all">All Active Users (<%= userStats.active %> users)</option>
+                            <option value="selected">Selected Users</option>
+                            <option value="userids">Specific User IDs</option>
+                        </select>
+                        <div class="form-text">Choose who will receive this broadcast message</div>
+                    </div>
+
+                    <!-- Selected Users Section (Hidden by default) -->
+                    <div class="form-group mb-4 d-none" id="selectedUsersSection">
+                        <label class="form-label">
+                            <i class="bi bi-person-check me-2"></i>Select Users
+                        </label>
+                        <div class="form-text mb-3">Search and select specific users to receive the broadcast</div>
+                        <div class="user-selection-container">
+                            <div class="search-box">
+                                <input type="text" id="userSearch" placeholder="Search by name, username, or ID..." class="form-control">
+                                <i class="bi bi-search"></i>
+                            </div>
+                            <div class="user-list" id="userList">
+                                <!-- Users will be loaded here -->
+                            </div>
+                            <div class="selected-count">
+                                <span class="badge" id="selectedCount">
+                                    <i class="bi bi-people me-2"></i>0 users selected
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User IDs Section (Hidden by default) -->
+                    <div class="form-group mb-4 d-none" id="userIdsSection">
+                        <label for="userIds" class="form-label">
+                            <i class="bi bi-hash me-2"></i>Telegram User IDs
+                        </label>
+                        <div class="form-text mb-3">Enter specific Telegram User IDs to target individual users</div>
+                        <textarea id="userIds" name="userIds" class="form-control" rows="4"
+                                  placeholder="Enter Telegram User IDs (one per line or comma separated)&#10;&#10;Examples:&#10;1630035459&#10;987654321, 123456789&#10;555666777"></textarea>
+                        <div class="form-text mt-2">Separate multiple IDs with commas or new lines</div>
+                    </div>
+
+                    <!-- Message Type -->
+                    <div class="form-group">
+                        <label for="messageType" class="form-label">
+                            <i class="bi bi-tag me-2"></i>Message Type
+                        </label>
+                        <select class="form-select" id="messageType" name="messageType" required>
+                            <option value="general">📝 General Message</option>
+                            <option value="announcement">📢 Announcement</option>
+                            <option value="promotion">🎉 Special Promotion</option>
+                            <option value="update">🔔 System Update</option>
+                            <option value="warning">⚠️ Important Notice</option>
+                        </select>
+                    </div>
+
+                    <!-- Image Upload -->
+                    <div class="form-group">
+                        <label for="imageUpload" class="form-label">
+                            <i class="bi bi-image me-2"></i>Image (Optional)
+                        </label>
+                        <div class="image-upload-container">
+                            <input
+                                type="file"
+                                class="form-control"
+                                id="imageUpload"
+                                name="image"
+                                accept="image/*"
+                                style="display: none;"
+                            >
+                            <div class="image-upload-area" id="imageUploadArea">
+                                <div class="upload-placeholder">
+                                    <i class="bi bi-cloud-upload" style="font-size: 3rem; color: rgba(255, 255, 255, 0.4);"></i>
+                                    <p style="margin: 1rem 0 0.5rem; color: rgba(255, 255, 255, 0.6);">Click to upload an image</p>
+                                    <p style="margin: 0; font-size: 0.9rem; color: rgba(255, 255, 255, 0.4);">JPG, PNG, GIF up to 10MB</p>
+                                </div>
+                                <div class="image-preview" id="imagePreview" style="display: none;">
+                                    <img id="previewImg" style="max-width: 100%; max-height: 200px; border-radius: 8px;">
+                                    <button type="button" class="remove-image" id="removeImage">
+                                        <i class="bi bi-x"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Message Content -->
+                    <div class="form-group">
+                        <label for="message" class="form-label">
+                            <i class="bi bi-chat-text me-2"></i>Message Content
+                        </label>
+                        <textarea
+                            class="form-control"
+                            id="message"
+                            name="message"
+                            rows="8"
+                            placeholder="Enter your broadcast message here (optional if image is uploaded)..."
+                            maxlength="4000"
+                        ></textarea>
+                        <div class="char-count">
+                            <span id="charCount">0</span>/4000 characters
+                        </div>
+                    </div>
+
+                    <!-- Preview -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="bi bi-eye me-2"></i>Message Preview
+                        </label>
+                        <div class="preview-card" id="messagePreview">
+                            <div class="preview-content">
+                                <em>Your message preview will appear here...</em>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Send Button -->
+                    <button type="submit" class="btn-broadcast" id="sendButton">
+                        <i class="bi bi-send me-2"></i>
+                        Send to <%= userStats.active %> Active Users
+                    </button>
+                </form>
+
+                <!-- Results Card (Hidden initially) -->
+                <div class="results-card d-none" id="resultsCard">
+                    <h4><i class="bi bi-check-circle me-2"></i>Broadcast Results</h4>
+                    <div id="resultsContent">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const messageTextarea = document.getElementById('message');
+            const messageTypeSelect = document.getElementById('messageType');
+            const charCount = document.getElementById('charCount');
+            const messagePreview = document.getElementById('messagePreview');
+            const broadcastForm = document.getElementById('broadcastForm');
+            const sendButton = document.getElementById('sendButton');
+            const resultsCard = document.getElementById('resultsCard');
+            const resultsContent = document.getElementById('resultsContent');
+
+            // Image upload elements
+            const imageUpload = document.getElementById('imageUpload');
+            const imageUploadArea = document.getElementById('imageUploadArea');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+            const removeImage = document.getElementById('removeImage');
+            const uploadPlaceholder = imageUploadArea.querySelector('.upload-placeholder');
+
+            // Recipient selection elements
+            const recipientType = document.getElementById('recipientType');
+            const selectedUsersSection = document.getElementById('selectedUsersSection');
+            const userIdsSection = document.getElementById('userIdsSection');
+            const userSearch = document.getElementById('userSearch');
+            const userList = document.getElementById('userList');
+            const selectedCount = document.getElementById('selectedCount');
+            const userIds = document.getElementById('userIds');
+
+            // Store users data and selected users
+            let allUsers = [];
+            let selectedUsers = new Set();
+
+            // Character count
+            messageTextarea.addEventListener('input', function() {
+                const count = this.value.length;
+                charCount.textContent = count;
+
+                if (count > 3500) {
+                    charCount.style.color = '#ef4444';
+                } else if (count > 3000) {
+                    charCount.style.color = '#f59e0b';
+                } else {
+                    charCount.style.color = 'rgba(255, 255, 255, 0.5)';
+                }
+
+                updatePreview();
+            });
+
+            // Message type change
+            messageTypeSelect.addEventListener('change', updatePreview);
+
+            // Recipient type change handler
+            recipientType.addEventListener('change', function() {
+                const type = this.value;
+
+                // Hide all sections first
+                selectedUsersSection.classList.add('d-none');
+                userIdsSection.classList.add('d-none');
+
+                // Show relevant section
+                if (type === 'selected') {
+                    selectedUsersSection.classList.remove('d-none');
+                    loadUsers();
+                } else if (type === 'userids') {
+                    userIdsSection.classList.remove('d-none');
+                }
+
+                updateSendButton();
+            });
+
+            // Load users for selection
+            async function loadUsers() {
+                try {
+                    const response = await fetch('/admin/api/users/all');
+                    if (response.ok) {
+                        allUsers = await response.json();
+                        renderUserList(allUsers);
+                    } else {
+                        showNotification('Failed to load users', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error loading users:', error);
+                    showNotification('Error loading users', 'error');
+                }
+            }
+
+            // Render user list
+            function renderUserList(users) {
+                userList.innerHTML = '';
+
+                if (users.length === 0) {
+                    userList.innerHTML = `
+                        <div class="text-muted text-center p-4">
+                            <i class="bi bi-search"></i>
+                            <div>No users found</div>
+                            <small>Try adjusting your search terms</small>
+                        </div>
+                    `;
+                    return;
+                }
+
+                users.forEach(user => {
+                    const userItem = document.createElement('div');
+                    userItem.className = 'user-item d-flex align-items-center p-2 border-bottom';
+                    userItem.style.cursor = 'pointer';
+
+                    const isSelected = selectedUsers.has(user.telegram_id);
+                    if (isSelected) {
+                        userItem.classList.add('bg-light');
+                    }
+
+                    userItem.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <input type="checkbox" class="form-check-input" ${isSelected ? 'checked' : ''}>
+                            <div class="user-avatar">
+                                ${user.profile_picture_url ?
+                                    `<img src="${user.profile_picture_url}" alt="Profile">` :
+                                    '<i class="bi bi-person-circle"></i>'
+                                }
+                            </div>
+                            <div class="user-info flex-grow-1">
+                                <div class="fw-bold">${user.first_name} ${user.last_name || ''}</div>
+                                <div class="text-muted">@${user.username || 'No username'} • ID: ${user.telegram_id}</div>
+                            </div>
+                            <div class="user-status">
+                                <span class="badge ${user.is_active ? 'bg-success' : 'bg-secondary'}">${user.is_active ? 'Active' : 'Inactive'}</span>
+                            </div>
+                        </div>
+                    `;
+
+                    userItem.addEventListener('click', function() {
+                        toggleUserSelection(user.telegram_id);
+                    });
+
+                    userList.appendChild(userItem);
+                });
+            }
+
+            // Toggle user selection
+            function toggleUserSelection(telegramId) {
+                if (selectedUsers.has(telegramId)) {
+                    selectedUsers.delete(telegramId);
+                } else {
+                    selectedUsers.add(telegramId);
+                }
+
+                updateSelectedCount();
+                renderUserList(allUsers);
+                updateSendButton();
+            }
+
+            // Update selected count
+            function updateSelectedCount() {
+                const count = selectedUsers.size;
+                const icon = count > 0 ? 'bi-people-fill' : 'bi-people';
+                selectedCount.innerHTML = `<i class="bi ${icon} me-2"></i>${count} users selected`;
+            }
+
+            // User search functionality
+            userSearch.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const filteredUsers = allUsers.filter(user => {
+                    const fullName = `${user.first_name} ${user.last_name || ''}`.toLowerCase();
+                    const username = (user.username || '').toLowerCase();
+                    const telegramId = user.telegram_id.toString();
+
+                    return fullName.includes(searchTerm) ||
+                           username.includes(searchTerm) ||
+                           telegramId.includes(searchTerm);
+                });
+
+                renderUserList(filteredUsers);
+            });
+
+            // Update send button text
+            function updateSendButton() {
+                const type = recipientType.value;
+                let buttonText = 'Send Message';
+
+                if (type === 'all') {
+                    buttonText = `Send to <%= userStats.active %> Active Users`;
+                } else if (type === 'selected') {
+                    buttonText = `Send to ${selectedUsers.size} Selected Users`;
+                } else if (type === 'userids') {
+                    const ids = parseUserIds();
+                    buttonText = `Send to ${ids.length} User IDs`;
+                }
+
+                sendButton.innerHTML = `<i class="bi bi-send me-2"></i>${buttonText}`;
+            }
+
+            // Parse user IDs from textarea
+            function parseUserIds() {
+                const text = userIds.value.trim();
+                if (!text) return [];
+
+                return text.split(/[,\n\r]+/)
+                          .map(id => id.trim())
+                          .filter(id => id && /^\d+$/.test(id))
+                          .map(id => parseInt(id));
+            }
+
+            // Update send button when user IDs change
+            userIds.addEventListener('input', updateSendButton);
+
+            // Image upload functionality
+            imageUploadArea.addEventListener('click', function() {
+                imageUpload.click();
+            });
+
+            imageUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    handleImageUpload(file);
+                }
+            });
+
+            // Drag and drop functionality
+            imageUploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                imageUploadArea.classList.add('dragover');
+            });
+
+            imageUploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                imageUploadArea.classList.remove('dragover');
+            });
+
+            imageUploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                imageUploadArea.classList.remove('dragover');
+
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const file = files[0];
+                    if (file.type.startsWith('image/')) {
+                        imageUpload.files = files;
+                        handleImageUpload(file);
+                    } else {
+                        showNotification('Please upload an image file', 'error');
+                    }
+                }
+            });
+
+            // Remove image
+            removeImage.addEventListener('click', function(e) {
+                e.stopPropagation();
+                clearImageUpload();
+            });
+
+            function handleImageUpload(file) {
+                // Validate file size (10MB limit)
+                if (file.size > 10 * 1024 * 1024) {
+                    showNotification('Image size must be less than 10MB', 'error');
+                    clearImageUpload();
+                    return;
+                }
+
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    showNotification('Please upload a valid image file', 'error');
+                    clearImageUpload();
+                    return;
+                }
+
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    uploadPlaceholder.style.display = 'none';
+                    imagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function clearImageUpload() {
+                imageUpload.value = '';
+                uploadPlaceholder.style.display = 'block';
+                imagePreview.style.display = 'none';
+                previewImg.src = '';
+            }
+
+            // Update preview
+            function updatePreview() {
+                const message = messageTextarea.value.trim();
+                const messageType = messageTypeSelect.value;
+
+                if (!message) {
+                    messagePreview.querySelector('.preview-content').innerHTML = '<em>Your message preview will appear here...</em>';
+                    return;
+                }
+
+                let formattedMessage = message;
+
+                if (messageType === 'announcement') {
+                    formattedMessage = `📢 <strong>Announcement</strong><br><br>${message}`;
+                } else if (messageType === 'promotion') {
+                    formattedMessage = `🎉 <strong>Special Promotion</strong><br><br>${message}`;
+                } else if (messageType === 'update') {
+                    formattedMessage = `🔔 <strong>System Update</strong><br><br>${message}`;
+                } else if (messageType === 'warning') {
+                    formattedMessage = `⚠️ <strong>Important Notice</strong><br><br>${message}`;
+                }
+
+                messagePreview.querySelector('.preview-content').innerHTML = formattedMessage.replace(/\n/g, '<br>');
+            }
+
+            // Form submission
+            broadcastForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const message = messageTextarea.value.trim();
+                const messageType = messageTypeSelect.value;
+                const hasImage = imageUpload.files[0];
+                const recType = recipientType.value;
+
+                // Require either message or image
+                if (!message && !hasImage) {
+                    showNotification('Please enter a message or upload an image', 'error');
+                    return;
+                }
+
+                // Validate recipients based on type
+                let recipientCount = 0;
+                let recipients = [];
+
+                if (recType === 'all') {
+                    recipientCount = <%= userStats.active %>;
+                } else if (recType === 'selected') {
+                    if (selectedUsers.size === 0) {
+                        showNotification('Please select at least one user', 'error');
+                        return;
+                    }
+                    recipientCount = selectedUsers.size;
+                    recipients = Array.from(selectedUsers);
+                } else if (recType === 'userids') {
+                    const ids = parseUserIds();
+                    if (ids.length === 0) {
+                        showNotification('Please enter at least one valid User ID', 'error');
+                        return;
+                    }
+                    recipientCount = ids.length;
+                    recipients = ids;
+                }
+
+                // Confirm before sending
+                if (!confirm(`Are you sure you want to send this message to ${recipientCount} users?`)) {
+                    return;
+                }
+
+                // Disable button and show loading
+                sendButton.disabled = true;
+                sendButton.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Sending...';
+
+                try {
+                    // Create FormData to handle file upload
+                    const formData = new FormData();
+                    formData.append('message', message);
+                    formData.append('messageType', messageType);
+                    formData.append('recipientType', recType);
+
+                    // Add recipients if not sending to all
+                    if (recType !== 'all') {
+                        formData.append('recipients', JSON.stringify(recipients));
+                    }
+
+                    // Add image if selected
+                    if (imageUpload.files[0]) {
+                        formData.append('image', imageUpload.files[0]);
+                    }
+
+                    const response = await fetch('/admin/api/broadcast', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        // Show results
+                        showResults(result);
+
+                        // Clear form
+                        broadcastForm.reset();
+                        clearImageUpload();
+                        updatePreview();
+
+                        // Show success notification
+                        showNotification(`Broadcast sent successfully! ${result.sent} messages delivered.`, 'success');
+                    } else {
+                        showNotification(result.error || 'Failed to send broadcast', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error sending broadcast:', error);
+                    showNotification('Failed to send broadcast', 'error');
+                } finally {
+                    // Re-enable button
+                    sendButton.disabled = false;
+                    sendButton.innerHTML = '<i class="bi bi-send me-2"></i>Send to <%= userStats.active %> Active Users';
+                }
+            });
+
+            function showResults(result) {
+                const successRate = result.sent + result.failed > 0 ?
+                    ((result.sent / (result.sent + result.failed)) * 100).toFixed(1) : 0;
+
+                const html = `
+                    <div class="results-grid">
+                        <div class="result-stat">
+                            <span class="result-number success">${result.sent}</span>
+                            <div class="result-label">Messages Sent</div>
+                        </div>
+                        <div class="result-stat">
+                            <span class="result-number error">${result.failed}</span>
+                            <div class="result-label">Failed</div>
+                        </div>
+                        <div class="result-stat">
+                            <span class="result-number rate">${successRate}%</span>
+                            <div class="result-label">Success Rate</div>
+                        </div>
+                    </div>
+                    ${result.failedUsers && result.failedUsers.length > 0 ? `
+                        <div style="margin-top: 1rem;">
+                            <h6 style="color: rgba(255, 255, 255, 0.8); margin-bottom: 0.5rem;">Failed Deliveries:</h6>
+                            <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 1rem;">
+                                ${result.failedUsers.map(user => `
+                                    <div style="color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; margin-bottom: 0.25rem;">
+                                        ${user.username ? '@' + user.username : 'ID: ' + user.telegram_id} - ${user.error}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                `;
+
+                resultsContent.innerHTML = html;
+                resultsCard.classList.remove('d-none');
+
+                // Scroll to results
+                resultsCard.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            function showNotification(message, type) {
+                // Remove existing notifications
+                const existing = document.querySelectorAll('.notification');
+                existing.forEach(n => n.remove());
+
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `
+                    <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+                    ${message}
+                `;
+
+                document.body.appendChild(notification);
+
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Epic Gaming Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000;
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Epic Cyberpunk Background */
+        .cyber-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background:
+                radial-gradient(ellipse at center, #0a0a0f 0%, #000 70%),
+                linear-gradient(45deg, #000 0%, #0a0a0f 25%, #1a1a2e 50%, #16213e 75%, #000 100%);
+            background-size: 100% 100%, 400% 400%;
+            animation: cyberShift 25s ease infinite;
+        }
+
+        .cyber-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 15% 85%, rgba(0, 255, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 15%, rgba(255, 0, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(0, 255, 128, 0.1) 0%, transparent 30%);
+            animation: cyberFloat 30s ease-in-out infinite;
+        }
+
+        .cyber-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: cyberGrid 60s linear infinite;
+        }
+
+        @keyframes cyberShift {
+            0%, 100% { background-position: 0% 0%, 0% 50%; }
+            25% { background-position: 0% 0%, 100% 50%; }
+            50% { background-position: 0% 0%, 100% 100%; }
+            75% { background-position: 0% 0%, 0% 100%; }
+        }
+
+        @keyframes cyberFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+            33% { transform: translateY(-30px) rotate(2deg) scale(1.05); }
+            66% { transform: translateY(15px) rotate(-2deg) scale(0.95); }
+        }
+
+        @keyframes cyberGrid {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Neon Glow Effects */
+        .neon-glow {
+            box-shadow:
+                0 0 5px rgba(0, 255, 255, 0.5),
+                0 0 10px rgba(0, 255, 255, 0.3),
+                0 0 15px rgba(0, 255, 255, 0.2),
+                0 0 20px rgba(0, 255, 255, 0.1);
+        }
+
+        .neon-text {
+            text-shadow:
+                0 0 5px rgba(0, 255, 255, 0.8),
+                0 0 10px rgba(0, 255, 255, 0.6),
+                0 0 15px rgba(0, 255, 255, 0.4);
+        }
+
+        /* Epic Sidebar */
+        .epic-sidebar {
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(25px);
+            border-right: 1px solid rgba(0, 212, 255, 0.2);
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .epic-sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg,
+                rgba(0, 212, 255, 0.05) 0%,
+                rgba(255, 0, 128, 0.05) 50%,
+                rgba(0, 212, 255, 0.05) 100%);
+            pointer-events: none;
+        }
+
+        /* Sidebar Brand */
+        .sidebar-brand {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #00d4ff, #ff0080);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .brand-icon::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #00d4ff, #ff0080);
+            border-radius: 14px;
+            opacity: 0;
+            filter: blur(8px);
+            transition: opacity 0.3s ease;
+            animation: brandPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes brandPulse {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.4; }
+        }
+
+        .brand-icon i {
+            font-size: 1.5rem;
+            color: white;
+            z-index: 2;
+        }
+
+        .brand-text h4 {
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        .brand-text span {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar-nav {
+            padding: 1rem 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section-title {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            border-radius: 0;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(135deg, #00d4ff, #ff0080);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .nav-link:hover::before,
+        .nav-link.active::before {
+            transform: scaleY(1);
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Epic Header */
+        .epic-header {
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(25px);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            padding: 2rem 3rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-title h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+        }
+
+        .header-title i {
+            font-size: 2rem;
+            color: #00d4ff;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .refresh-btn {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            color: #00d4ff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+            transform: translateY(-2px);
+        }
+
+        /* Epic Stats Cards */
+        .stats-section {
+            padding: 3rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .epic-stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .epic-stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 0, 128, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .epic-stat-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .epic-stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .stat-info h3 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .stat-info p {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+            margin: 0.5rem 0 0;
+            font-size: 1.1rem;
+        }
+
+        .stat-info span {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00d4ff, #ff0080);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .epic-stat-card:hover .stat-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        /* Epic Activity Cards */
+        .activity-section {
+            padding: 0 3rem 3rem;
+        }
+
+        .epic-activity-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .epic-activity-card:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .activity-header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .activity-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .activity-title i {
+            font-size: 1.5rem;
+            color: #00d4ff;
+        }
+
+        .activity-title h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .activity-badge {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            padding: 0.5rem 1rem;
+            color: #00d4ff;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .activity-content {
+            padding: 1.5rem 2rem 2rem;
+        }
+
+        /* Transaction List */
+        .transaction-list,
+        .purchase-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .transaction-item,
+        .purchase-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .transaction-item:hover,
+        .purchase-item:hover {
+            background: rgba(0, 212, 255, 0.05);
+            border-color: rgba(0, 212, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .transaction-icon,
+        .purchase-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00d4ff, #ff0080);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .transaction-info,
+        .purchase-info {
+            flex: 1;
+        }
+
+        .transaction-user {
+            margin-bottom: 0.25rem;
+        }
+
+        .purchase-title {
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #ffffff;
+            font-size: 0.95rem;
+            line-height: 1.2;
+        }
+
+        .user-username {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0.1rem;
+            line-height: 1.1;
+        }
+
+        .transaction-details,
+        .purchase-details {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .transaction-type {
+            padding: 0.2rem 0.6rem;
+            border-radius: 8px;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .transaction-type.topup {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .transaction-type.purchase {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .transaction-type.admin_credit {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .transaction-type.admin_debit {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .transaction-date,
+        .purchase-date,
+        .purchase-user {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .transaction-amount,
+        .purchase-amount {
+            text-align: right;
+        }
+
+        .amount {
+            font-weight: 700;
+            color: #ffffff;
+            font-size: 1.1rem;
+        }
+
+        .status {
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: capitalize;
+            margin-top: 0.25rem;
+        }
+
+        .status-completed,
+        .status-delivered {
+            color: #22c55e;
+        }
+
+        .status-pending {
+            color: #f59e0b;
+        }
+
+        .status-failed,
+        .status-cancelled {
+            color: #ef4444;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        /* Activity Footer */
+        .activity-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1.5rem;
+            text-align: center;
+        }
+
+        .view-all-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .view-all-btn:hover {
+            color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-content {
+                margin-left: 0;
+            }
+
+            .epic-sidebar {
+                transform: translateX(-100%);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .epic-header {
+                padding: 1.5rem 1rem;
+            }
+
+            .stats-section,
+            .activity-section {
+                padding: 1.5rem 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-title h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-bg"></div>
+
+    <!-- Epic Sidebar -->
+    <div class="epic-sidebar">
+        <div class="sidebar-brand">
+            <a href="/" class="brand-logo">
+                <div class="brand-icon">
+                    <i class="bi bi-controller"></i>
+                </div>
+                <div class="brand-text">
+                    <h4>Gaming Store</h4>
+                    <span>Admin Panel</span>
+                </div>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Main</div>
+                <div class="nav-item">
+                    <a href="/admin/dashboard" class="nav-link active">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Management</div>
+                <div class="nav-item">
+                    <a href="/admin/users" class="nav-link">
+                        <i class="bi bi-people"></i>
+                        <span>Users</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/accounts" class="nav-link">
+                        <i class="bi bi-controller"></i>
+                        <span>Gaming Accounts</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/transactions" class="nav-link">
+                        <i class="bi bi-credit-card"></i>
+                        <span>Transactions</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/purchases" class="nav-link">
+                        <i class="bi bi-bag-check"></i>
+                        <span>Purchases</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">System</div>
+                <div class="nav-item">
+                    <a href="/admin/admin-users" class="nav-link">
+                        <i class="bi bi-shield-lock"></i>
+                        <span>Admin Users</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/broadcast" class="nav-link">
+                        <i class="bi bi-megaphone"></i>
+                        <span>Broadcast</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/health" class="nav-link">
+                        <i class="bi bi-heart-pulse"></i>
+                        <span>System Health</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="/admin/settings" class="nav-link">
+                        <i class="bi bi-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <form action="/admin/logout" method="POST" style="margin: 0;">
+                        <button type="submit" class="nav-link" style="background: none; border: none; width: 100%; text-align: left;">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>Logout</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Epic Header -->
+        <div class="epic-header">
+            <div class="header-content">
+                <div class="header-title">
+                    <i class="bi bi-speedometer2"></i>
+                    <h1>Dashboard</h1>
+                </div>
+                <div class="header-actions">
+                    <a href="#" class="refresh-btn" onclick="refreshStats()">
+                        <i class="bi bi-arrow-clockwise"></i>
+                        <span>Refresh Data</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Epic Statistics Section -->
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div class="epic-stat-card">
+                    <div class="stat-content">
+                        <div class="stat-info">
+                            <h3><%= userStats.total %></h3>
+                            <p>Total Users</p>
+                            <span>Registered members</span>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="epic-stat-card">
+                    <div class="stat-content">
+                        <div class="stat-info">
+                            <h3><%= accountStats.available %></h3>
+                            <p>Available Accounts</p>
+                            <span>Ready for purchase</span>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="bi bi-controller"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="epic-stat-card">
+                    <div class="stat-content">
+                        <div class="stat-info">
+                            <h3><%= formatCurrency(transactionStats.totalRevenue) %></h3>
+                            <p>Total Revenue</p>
+                            <span>All-time earnings</span>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="bi bi-currency-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="epic-stat-card">
+                    <div class="stat-content">
+                        <div class="stat-info">
+                            <h3><%= formatCurrency(purchaseStats.totalSales) %></h3>
+                            <p>Total Sales</p>
+                            <span>Account purchases</span>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="bi bi-bag-check"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Epic Activity Section -->
+            <div class="activity-section">
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="epic-activity-card">
+                            <div class="activity-header">
+                                <div class="activity-title">
+                                    <i class="bi bi-credit-card"></i>
+                                    <h3>Recent Transactions</h3>
+                                </div>
+                                <div class="activity-badge">
+                                    <span><%= recentTransactions ? recentTransactions.length : 0 %> recent</span>
+                                </div>
+                            </div>
+                            <div class="activity-content">
+                                <% if (recentTransactions && recentTransactions.length > 0) { %>
+                                <div class="transaction-list">
+                                    <% recentTransactions.slice(0, 5).forEach(transaction => { %>
+                                    <div class="transaction-item">
+                                        <div class="transaction-icon">
+                                            <% if (transaction.type === 'topup') { %>
+                                                <i class="bi bi-arrow-down-circle text-success"></i>
+                                            <% } else if (transaction.type === 'admin_credit') { %>
+                                                <i class="bi bi-shield-plus text-warning"></i>
+                                            <% } else if (transaction.type === 'admin_debit') { %>
+                                                <i class="bi bi-shield-minus text-danger"></i>
+                                            <% } else if (transaction.type === 'purchase') { %>
+                                                <i class="bi bi-bag-check text-primary"></i>
+                                            <% } else { %>
+                                                <i class="bi bi-arrow-up-circle text-info"></i>
+                                            <% } %>
+                                        </div>
+                                        <div class="transaction-info">
+                                            <div class="transaction-user">
+                                                <% if (transaction.first_name || transaction.last_name) { %>
+                                                    <div class="user-name"><%= (transaction.first_name || '') + ' ' + (transaction.last_name || '') %></div>
+                                                    <% if (transaction.username) { %>
+                                                        <div class="user-username">@<%= transaction.username %></div>
+                                                    <% } %>
+                                                <% } else if (transaction.username) { %>
+                                                    <div class="user-name">@<%= transaction.username %></div>
+                                                <% } else { %>
+                                                    <div class="user-name">ID: <%= transaction.user_id %></div>
+                                                <% } %>
+                                            </div>
+                                            <div class="transaction-details">
+                                                <span class="transaction-type <%= transaction.type %>">
+                                                    <% if (transaction.type === 'topup') { %>
+                                                        Top Up
+                                                    <% } else if (transaction.type === 'admin_credit') { %>
+                                                        Admin Credit
+                                                    <% } else if (transaction.type === 'admin_debit') { %>
+                                                        Admin Debit
+                                                    <% } else if (transaction.type === 'purchase') { %>
+                                                        Purchase
+                                                    <% } else { %>
+                                                        <%= transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1) %>
+                                                    <% } %>
+                                                </span>
+                                                <span class="transaction-date"><%= formatDate(transaction.timestamp) %></span>
+                                            </div>
+                                        </div>
+                                        <div class="transaction-amount">
+                                            <div class="amount"><%= formatCurrency(transaction.amount) %></div>
+                                            <div class="status status-<%= transaction.status %>"><%= transaction.status %></div>
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                                </div>
+                                <% } else { %>
+                                <div class="empty-state">
+                                    <i class="bi bi-credit-card"></i>
+                                    <p>No recent transactions</p>
+                                </div>
+                                <% } %>
+                                <div class="activity-footer">
+                                    <a href="/admin/transactions" class="view-all-btn">
+                                        <span>View All Transactions</span>
+                                        <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="epic-activity-card">
+                            <div class="activity-header">
+                                <div class="activity-title">
+                                    <i class="bi bi-bag-check"></i>
+                                    <h3>Recent Purchases</h3>
+                                </div>
+                                <div class="activity-badge">
+                                    <span><%= recentPurchases ? recentPurchases.length : 0 %> recent</span>
+                                </div>
+                            </div>
+                            <div class="activity-content">
+                                <% if (recentPurchases && recentPurchases.length > 0) { %>
+                                <div class="purchase-list">
+                                    <% recentPurchases.slice(0, 5).forEach(purchase => { %>
+                                    <div class="purchase-item">
+                                        <div class="purchase-icon">
+                                            <i class="bi bi-controller"></i>
+                                        </div>
+                                        <div class="purchase-info">
+                                            <div class="purchase-title"><%= purchase.title || 'Unknown Account' %></div>
+                                            <div class="purchase-details">
+                                                <span class="purchase-user">
+                                                    <% if (purchase.first_name || purchase.last_name) { %>
+                                                        <%= (purchase.first_name || '') + ' ' + (purchase.last_name || '') %>
+                                                        <% if (purchase.username) { %>
+                                                            <small>@<%= purchase.username %></small>
+                                                        <% } %>
+                                                    <% } else if (purchase.username) { %>
+                                                        @<%= purchase.username %>
+                                                    <% } else { %>
+                                                        ID: <%= purchase.user_id %>
+                                                    <% } %>
+                                                </span>
+                                                <span class="purchase-date"><%= formatDate(purchase.purchase_date) %></span>
+                                            </div>
+                                        </div>
+                                        <div class="purchase-amount">
+                                            <div class="amount"><%= formatCurrency(purchase.price || 0) %></div>
+                                            <div class="status status-<%= purchase.delivery_status %>"><%= purchase.delivery_status %></div>
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                                </div>
+                                <% } else { %>
+                                <div class="empty-state">
+                                    <i class="bi bi-bag-check"></i>
+                                    <p>No recent purchases</p>
+                                </div>
+                                <% } %>
+                                <div class="activity-footer">
+                                    <a href="/admin/purchases" class="view-all-btn">
+                                        <span>View All Purchases</span>
+                                        <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Epic Dashboard JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate stats cards on load
+            const statCards = document.querySelectorAll('.epic-stat-card');
+            statCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            // Animate activity cards
+            const activityCards = document.querySelectorAll('.epic-activity-card');
+            activityCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateX(30px)';
+
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateX(0)';
+                }, 300 + (index * 150));
+            });
+
+            // Add hover effects to nav links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateX(5px)';
+                });
+
+                link.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateX(0)';
+                });
+            });
+
+            // Real-time clock (Cambodia timezone)
+            function updateClock() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', {
+                    timeZone: 'Asia/Phnom_Penh',
+                    hour12: false
+                });
+                const dateString = now.toLocaleDateString('en-US', {
+                    timeZone: 'Asia/Phnom_Penh'
+                });
+
+                // You can add a clock element if needed
+                // document.getElementById('clock').textContent = timeString;
+            }
+
+            setInterval(updateClock, 1000);
+            updateClock();
+        });
+
+        // Refresh stats function
+        async function refreshStats() {
+            const refreshBtn = document.querySelector('.refresh-btn');
+            const originalText = refreshBtn.innerHTML;
+
+            // Show loading state
+            refreshBtn.innerHTML = '<i class="bi bi-arrow-clockwise spin"></i><span>Refreshing...</span>';
+            refreshBtn.style.pointerEvents = 'none';
+
+            try {
+                const response = await fetch('/admin/api/stats');
+                const stats = await response.json();
+
+                // Update stats cards with animation
+                const statCards = document.querySelectorAll('.epic-stat-card');
+                statCards.forEach(card => {
+                    card.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                        card.style.transform = 'scale(1)';
+                    }, 200);
+                });
+
+                // Show success message
+                showNotification('Statistics refreshed successfully!', 'success');
+
+            } catch (error) {
+                console.error('Error refreshing stats:', error);
+                showNotification('Failed to refresh statistics', 'error');
+            } finally {
+                // Restore button
+                setTimeout(() => {
+                    refreshBtn.innerHTML = originalText;
+                    refreshBtn.style.pointerEvents = 'auto';
+                }, 1000);
+            }
+        }
+
+        // Show notification function
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+
+            // Add notification styles
+            notification.style.cssText = `
+                position: fixed;
+                top: 2rem;
+                right: 2rem;
+                background: ${type === 'success' ? 'rgba(34, 197, 94, 0.9)' : type === 'error' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(59, 130, 246, 0.9)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                z-index: 10000;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            `;
+
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Add spin animation for refresh icon
+        const style = document.createElement('style');
+        style.textContent = `
+            .spin {
+                animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

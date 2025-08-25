@@ -1,0 +1,102 @@
+<!-- Premium Gaming Header -->
+<header class="premium-header">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid px-4">
+            <!-- Brand Logo -->
+            <a class="navbar-brand premium-brand" href="/">
+                <div class="brand-container">
+                    <div class="brand-icon">
+                        <i class="bi bi-controller"></i>
+                        <div class="icon-glow"></div>
+                    </div>
+                    <div class="brand-text">
+                        <span class="brand-name">GAMING</span>
+                        <span class="brand-sub">STORE</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Mobile Toggle -->
+            <button class="navbar-toggler premium-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <!-- Navigation Menu -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link premium-nav-link active" href="/">
+                            <span class="link-text">Home</span>
+                            <div class="link-underline"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link premium-nav-link" href="#features">
+                            <span class="link-text">Features</span>
+                            <div class="link-underline"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link premium-nav-link" href="/health">
+                            <span class="link-text">Status</span>
+                            <div class="link-underline"></div>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Right Side Actions -->
+                <div class="navbar-actions">
+                    <% if (typeof session !== 'undefined' && session && session.isAdmin) { %>
+                    <!-- Admin Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn premium-admin-btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i>
+                            <span>Admin Panel</span>
+                        </button>
+                        <ul class="dropdown-menu premium-dropdown">
+                            <li><a class="dropdown-item" href="/admin/dashboard">
+                                <i class="bi bi-speedometer2"></i>Dashboard
+                            </a></li>
+                            <li><a class="dropdown-item" href="/admin/accounts">
+                                <i class="bi bi-controller"></i>Gaming Accounts
+                            </a></li>
+                            <li><a class="dropdown-item" href="/admin/users">
+                                <i class="bi bi-people"></i>Users
+                            </a></li>
+                            <li><a class="dropdown-item" href="/admin/transactions">
+                                <i class="bi bi-credit-card"></i>Transactions
+                            </a></li>
+                            <li><a class="dropdown-item" href="/admin/settings">
+                                <i class="bi bi-gear"></i>Settings
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form action="/admin/logout" method="POST" class="d-inline w-100">
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="bi bi-box-arrow-right"></i>Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    <% } else { %>
+                    <!-- Login Button -->
+                    <a href="/admin/login" class="btn premium-login-btn">
+                        <i class="bi bi-shield-lock"></i>
+                        <span>Admin Login</span>
+                    </a>
+                    <% } %>
+
+                    <!-- CTA Button -->
+                    <a href="https://t.me/<%= typeof botUsername !== 'undefined' ? botUsername : 'YourBot' %>" class="btn premium-cta-btn">
+                        <i class="bi bi-telegram"></i>
+                        <span>Start Shopping</span>
+                        <div class="btn-glow"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
