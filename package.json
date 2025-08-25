@@ -30,9 +30,12 @@
     "helmet": "^7.1.0",
     "multer": "^2.0.0",
     "node-telegram-bot-api": "^0.63.0",
+    "puppeteer": "^22.13.1",
     "qrcode": "^1.5.3",
-    "sharp": "^0.33.3",
     "sqlite3": "^5.1.6"
+  },
+  "optionalDependencies": {
+    "@img/sharp-linux-x64": "^0.33.3"
   },
   "engines": {
     "node": ">=16.0.0"
